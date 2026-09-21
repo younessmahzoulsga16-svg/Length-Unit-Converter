@@ -1,0 +1,388 @@
+```html
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Length Unit Converter</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f3ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#1e1b4b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'sans-serif'],
+                        mono: ['Fira Code', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glow-purple {
+            box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.25);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-3 sm:p-6 antialiased selection:bg-purple-500 selection:text-white">
+
+    <header class="max-w-xl mx-auto w-full pt-4 pb-2 text-center">
+        <div class="inline-flex items-center justify-center p-3.5 bg-gradient-to-tr from-purple-600/20 to-blue-600/20 border border-purple-500/30 rounded-2xl mb-3 shadow-lg shadow-purple-950/40">
+            <i class="fa-solid fa-arrows-left-right-to-line text-2xl text-purple-400"></i>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white mb-1.5">
+            Advanced Length Unit Converter
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-medium px-4">
+            Instant, high-precision conversion across cosmic, metric, and subatomic scale dimensions
+        </p>
+    </header>
+
+    <main class="max-w-xl mx-auto w-full my-auto py-4">
+        <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 sm:p-7 shadow-2xl backdrop-blur-xl relative overflow-hidden glow-purple">
+            
+            <!-- Category Filter Chips -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-3 mb-5 border-b border-slate-800/80 no-scrollbar">
+                <button onclick="filterCategory('all')" id="chip-all" class="chip active text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap bg-purple-600 text-white shadow-md shadow-purple-900/40">
+                    All (16)
+                </button>
+                <button onclick="filterCategory('astronomical')" id="chip-astronomical" class="chip text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 hover:text-white">
+                    Astronomical
+                </button>
+                <button onclick="filterCategory('standard')" id="chip-standard" class="chip text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 hover:text-white">
+                    Standard
+                </button>
+                <button onclick="filterCategory('microic')" id="chip-microic" class="chip text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap bg-slate-800/80 text-slate-300 hover:bg-slate-700/80 hover:text-white">
+                    Micro & Atomic
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-300 px-1">
+                        <label for="inputValue" class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Source Value & Unit:
+                        </label>
+                    </div>
+
+                    <div class="relative flex items-center">
+                        <input type="number" id="inputValue" value="1" step="any" placeholder="Enter value..."
+                            class="w-full bg-slate-950 border border-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-2xl py-3.5 px-4 text-xl font-bold font-mono text-white outline-none transition-all pr-12 pl-4">
+                        <button onclick="clearInput()" title="Clear input" aria-label="Clear input" class="absolute right-3 w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all flex items-center justify-center">
+                            <i class="fa-solid fa-xmark text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Quick Preset Values -->
+                    <div class="flex items-center gap-2 pt-1">
+                        <span class="text-[11px] font-bold text-slate-400">Presets:</span>
+                        <div class="flex gap-1.5 flex-wrap">
+                            <button onclick="setInputValue(1)" class="px-2.5 py-1 bg-slate-800/60 hover:bg-purple-600/30 text-slate-300 hover:text-purple-300 border border-slate-700/60 rounded-lg text-xs font-bold transition-all">1</button>
+                            <button onclick="setInputValue(1000)" class="px-2.5 py-1 bg-slate-800/60 hover:bg-purple-600/30 text-slate-300 hover:text-purple-300 border border-slate-700/60 rounded-lg text-xs font-bold transition-all">1,000</button>
+                            <button onclick="setInputValue(1000000)" class="px-2.5 py-1 bg-slate-800/60 hover:bg-purple-600/30 text-slate-300 hover:text-purple-300 border border-slate-700/60 rounded-lg text-xs font-bold transition-all">10⁶</button>
+                            <button onclick="setInputValue(0.001)" class="px-2.5 py-1 bg-slate-800/60 hover:bg-purple-600/30 text-slate-300 hover:text-purple-300 border border-slate-700/60 rounded-lg text-xs font-bold transition-all">0.001</button>
+                        </div>
+                    </div>
+
+                    <!-- From Unit Dropdown -->
+                    <div class="pt-1">
+                        <select id="fromUnit" aria-label="Original Unit" class="w-full bg-slate-950 border border-slate-700 hover:border-purple-500 focus:border-purple-500 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-100 outline-none transition-all cursor-pointer">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-center -my-1 relative z-10">
+                    <button onclick="swapUnits()" title="Swap Units" aria-label="Swap Units" class="w-12 h-12 bg-gradient-to-tr from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-2xl shadow-lg shadow-purple-900/50 hover:scale-105 active:scale-95 transition-all flex items-center justify-center border border-purple-400/30 group">
+                        <i class="fa-solid fa-arrow-down-up-across-line text-base group-hover:rotate-180 transition-transform duration-300"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-300 px-1">
+                        <label class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                            Converted Result:
+                        </label>
+                        <!-- Copy Icon Button -->
+                        <button id="copyBtn" onclick="copyResult()" aria-label="Copy Result" title="Copy result" class="w-8 h-8 bg-slate-800 hover:bg-purple-600/30 text-slate-300 hover:text-purple-300 border border-slate-700 rounded-xl transition-all flex items-center justify-center shadow-sm active:scale-95 group">
+                            <i id="copyIcon" class="fa-regular fa-copy text-xs group-hover:scale-110 transition-transform"></i>
+                        </button>
+                    </div>
+
+                    <!-- Result Display Box -->
+                    <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-purple-500/30 rounded-2xl p-4 sm:p-5 shadow-inner">
+                        <div class="flex items-baseline justify-between gap-3 overflow-hidden">
+                            <span id="resultValue" class="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-indigo-200 to-purple-300 break-all select-all font-mono">0</span>
+                            <span id="resultUnitSymbol" class="text-xs font-extrabold text-purple-300 shrink-0 bg-purple-950/80 border border-purple-500/40 px-3 py-1 rounded-xl"></span>
+                        </div>
+                        
+                        <div id="resultFormula" class="text-xs text-slate-400 border-t border-slate-800/80 pt-2.5 mt-2.5 font-semibold flex items-center gap-1.5">
+                            <!-- Conversion ratio injected here -->
+                        </div>
+                    </div>
+
+                    <!-- To Unit Dropdown -->
+                    <div class="pt-1">
+                        <select id="toUnit" aria-label="Target Unit" class="w-full bg-slate-950 border border-slate-700 hover:border-blue-500 focus:border-blue-500 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-100 outline-none transition-all cursor-pointer">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="max-w-xl mx-auto w-full py-4 text-center text-xs text-slate-500 space-y-1">
+        <p class="font-bold text-slate-400">© 2026 Advanced Length Unit Converter</p>
+        <p class="text-[11px] text-slate-600">Fast, high-precision conversion across cosmic, metric, and subatomic scales</p>
+    </footer>
+
+    <script>
+        // All 16 Length Units normalized relative to 1 Meter (m)
+        const unitsData = [
+            { id: 'ly',  name: 'Light-year', symbol: 'ly', factor: 9460730472580800, category: 'astronomical' },
+            { id: 'AU',  name: 'Astronomical Unit', symbol: 'AU', factor: 149597870700, category: 'astronomical' },
+            { id: 'Tm',  name: 'Terameter', symbol: 'Tm', factor: 1e12, category: 'astronomical' },
+            { id: 'Gm',  name: 'Gigameter', symbol: 'Gm', factor: 1e9, category: 'astronomical' },
+            { id: 'Mm',  name: 'Megameter', symbol: 'Mm', factor: 1e6, category: 'astronomical' },
+            { id: 'km',  name: 'Kilometer', symbol: 'km', factor: 1000, category: 'standard' },
+            { id: 'hm',  name: 'Hectometer', symbol: 'hm', factor: 100, category: 'standard' },
+            { id: 'dam', name: 'Decameter', symbol: 'dam', factor: 10, category: 'standard' },
+            { id: 'm',   name: 'Meter', symbol: 'm', factor: 1, category: 'standard' },
+            { id: 'dm',  name: 'Decimeter', symbol: 'dm', factor: 0.1, category: 'standard' },
+            { id: 'cm',  name: 'Centimeter', symbol: 'cm', factor: 0.01, category: 'standard' },
+            { id: 'mm',  name: 'Millimeter', symbol: 'mm', factor: 0.001, category: 'standard' },
+            { id: 'um',  name: 'Micrometer (Micron)', symbol: 'μm', factor: 1e-6, category: 'microic' },
+            { id: 'nm',  name: 'Nanometer', symbol: 'nm', factor: 1e-9, category: 'microic' },
+            { id: 'pm',  name: 'Picometer', symbol: 'pm', factor: 1e-12, category: 'microic' },
+            { id: 'fm',  name: 'Femtometer', symbol: 'fm', factor: 1e-15, category: 'microic' }
+        ];
+
+        let currentCategory = 'all';
+
+        // DOM Elements
+        const inputValue = document.getElementById('inputValue');
+        const fromUnitSelect = document.getElementById('fromUnit');
+        const toUnitSelect = document.getElementById('toUnit');
+        const resultValue = document.getElementById('resultValue');
+        const resultUnitSymbol = document.getElementById('resultUnitSymbol');
+        const resultFormula = document.getElementById('resultFormula');
+
+        function populateDropdowns(category = 'all') {
+            const currentFrom = fromUnitSelect.value || 'm';
+            const currentTo = toUnitSelect.value || 'cm';
+
+            fromUnitSelect.innerHTML = '';
+            toUnitSelect.innerHTML = '';
+
+            const filteredUnits = category === 'all' 
+                ? unitsData 
+                : unitsData.filter(u => u.category === category);
+
+            filteredUnits.forEach(unit => {
+                const opt1 = document.createElement('option');
+                opt1.value = unit.id;
+                opt1.textContent = `${unit.name} (${unit.symbol})`;
+                fromUnitSelect.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = unit.id;
+                opt2.textContent = `${unit.name} (${unit.symbol})`;
+                toUnitSelect.appendChild(opt2);
+            });
+
+            // Restore previous selections if valid, else pick sensible defaults
+            if (filteredUnits.some(u => u.id === currentFrom)) {
+                fromUnitSelect.value = currentFrom;
+            } else {
+                fromUnitSelect.value = filteredUnits[0]?.id || 'm';
+            }
+
+            if (filteredUnits.some(u => u.id === currentTo) && currentTo !== fromUnitSelect.value) {
+                toUnitSelect.value = currentTo;
+            } else {
+                toUnitSelect.value = filteredUnits[1]?.id || filteredUnits[0]?.id || 'cm';
+            }
+
+            calculateConversion();
+        }
+
+        // Filter Category Chips
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.chip').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white', 'shadow-md', 'shadow-purple-900/40');
+                btn.classList.add('bg-slate-800/80', 'text-slate-300');
+            });
+
+            const activeBtn = document.getElementById(`chip-${cat}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-800/80', 'text-slate-300');
+                activeBtn.classList.add('bg-purple-600', 'text-white', 'shadow-md', 'shadow-purple-900/40');
+            }
+
+            populateDropdowns(cat);
+        }
+
+        function formatNumber(num) {
+            if (isNaN(num)) return '0';
+            if (num === 0) return '0';
+
+            const absNum = Math.abs(num);
+            if (absNum >= 1e9 || (absNum < 1e-5 && absNum > 0)) {
+                return num.toExponential(6).replace('e+', ' × 10^').replace('e-', ' × 10^-');
+            }
+            return new Intl.NumberFormat('en-US', { maximumFractionDigits: 8 }).format(num);
+        }
+
+        // Main Conversion Logic
+        function calculateConversion() {
+            const val = parseFloat(inputValue.value);
+            
+            if (isNaN(val)) {
+                resultValue.textContent = '0';
+                resultFormula.innerHTML = '<i class="fa-solid fa-circle-info text-slate-500"></i> Please enter a valid number';
+                return;
+            }
+
+            const fromObj = unitsData.find(u => u.id === fromUnitSelect.value);
+            const toObj = unitsData.find(u => u.id === toUnitSelect.value);
+
+            if (!fromObj || !toObj) return;
+
+            // Convert to base meters then to target unit
+            const valueInMeters = val * fromObj.factor;
+            const convertedValue = valueInMeters / toObj.factor;
+
+            // Ratio: 1 FromUnit = X ToUnit
+            const ratio = fromObj.factor / toObj.factor;
+
+            // Update UI
+            resultValue.textContent = formatNumber(convertedValue);
+            resultUnitSymbol.textContent = toObj.symbol;
+
+            resultFormula.innerHTML = `
+                <i class="fa-solid fa-calculator text-purple-400"></i>
+                <span>Ratio: 1 ${fromObj.name} = <strong class="text-slate-200 font-mono">${formatNumber(ratio)}</strong> ${toObj.name}</span>
+            `;
+        }
+
+        // Swap From & To Units
+        function swapUnits() {
+            const temp = fromUnitSelect.value;
+            fromUnitSelect.value = toUnitSelect.value;
+            toUnitSelect.value = temp;
+            calculateConversion();
+        }
+
+        // Preset Input Value
+        function setInputValue(val) {
+            inputValue.value = val;
+            calculateConversion();
+        }
+
+        // Clear Input
+        function clearInput() {
+            inputValue.value = '';
+            calculateConversion();
+            inputValue.focus();
+        }
+
+        // Copy Result to Clipboard
+        function copyResult() {
+            const textToCopy = `${resultValue.textContent} ${resultUnitSymbol.textContent}`;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+                document.body.removeChild(textarea);
+            }
+
+            // Visual Copy Feedback
+            const copyIcon = document.getElementById('copyIcon');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            copyIcon.className = 'fa-solid fa-check text-emerald-400 text-xs';
+            copyBtn.classList.add('border-emerald-500/50', 'bg-emerald-950/40');
+
+            setTimeout(() => {
+                copyIcon.className = 'fa-regular fa-copy text-xs group-hover:scale-110 transition-transform';
+                copyBtn.classList.remove('border-emerald-500/50', 'bg-emerald-950/40');
+            }, 1800);
+        }
+
+        window.onload = function() {
+            populateDropdowns('all');
+
+            inputValue.addEventListener('input', calculateConversion);
+            fromUnitSelect.addEventListener('change', calculateConversion);
+            toUnitSelect.addEventListener('change', calculateConversion);
+        };
+    </script>
+</body>
+</html>
+```
