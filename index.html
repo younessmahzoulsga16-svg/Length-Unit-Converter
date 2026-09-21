@@ -276,15 +276,19 @@
             populateDropdowns(cat);
         }
 
+        // Always format numbers into scientific notation (A × 10^n)
         function formatNumber(num) {
             if (isNaN(num)) return '0';
-            if (num === 0) return '0';
+            if (num === 0) return '0 × 10^0';
 
-            const absNum = Math.abs(num);
-            if (absNum >= 1e9 || (absNum < 1e-5 && absNum > 0)) {
-                return num.toExponential(6).replace('e+', ' × 10^').replace('e-', ' × 10^-');
-            }
-            return new Intl.NumberFormat('en-US', { maximumFractionDigits: 8 }).format(num);
+            const expStr = num.toExponential(6);
+            const [mantissa, exponent] = expStr.split('e');
+            
+            // Clean up trailing zeros from fixed precision
+            const cleanMantissa = parseFloat(mantissa).toString();
+            const expVal = parseInt(exponent, 10);
+
+            return `${cleanMantissa} × 10^${expVal}`;
         }
 
         // Main Conversion Logic
